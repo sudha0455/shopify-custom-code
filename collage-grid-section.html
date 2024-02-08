@@ -1,0 +1,440 @@
+
+<style>
+  .collage.collage-grid {
+      display: grid;
+      grid-template-columns: 50% 50%;
+      gap: 10px;
+  }
+  /* 1st */
+  .multicolumn-card-img {
+    position: relative;
+  }
+  .multicolumn-card {
+      position: absolute;
+      right: 0;
+      bottom: 10%;
+      padding: 10px;
+  } 
+ .multicolumn-card-img img {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+  }
+  .multicolumn-card h3 , .imge-txt  {
+    color: #fff;
+  }
+  
+  /* 2nd */
+  .column-two-grid {
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 10px;
+  }
+  .image-column img {
+      width: 100%;
+  }  
+  @media screen and (max-width: 750px) {
+  .collage.collage-grid {
+    grid-template-columns: auto;
+  }
+}
+</style>
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="color-{{ section.settings.color_scheme }} gradient isolate">
+  <div class="page-width section-{{ section.id }}-padding">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="collage-wrapper-title inline-richtext {{ section.settings.heading_size }}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+        {{ section.settings.heading }}
+      </h2>
+    {%- endif -%}
+    <div class="collage collage-grid {% if section.settings.mobile_layout == 'collage' %} collage--mobile{% endif %}">
+      {%- for block in section.blocks -%}
+        <div
+          class="collage__item  collage__item--{{ section.settings.desktop_layout }}">          
+          {%- case block.type -%}
+            {%- when 'image' -%}
+              <div class="collage-card {% if section.settings.card_styles == 'none' %}global-media-settings{% else %}card-wrapper {{ section.settings.card_styles }} color-{{ settings.card_color_scheme }} gradient{% endif %}">
+               <a href="{{ block.settings.link }}">
+                <div class="multicolumn-card-img media--transparent ratio" >
+                  {%- if block.settings.image != blank -%}
+                   <img
+                            srcset="{{ block.settings.image | image_url: width: block.settings.image_width }}, {{ block.settings.image | image_url: width: image_size_2x }} 2x"
+                            src="{{ block.settings.image | image_url: width: 760 }}"
+                            alt="{{ block.settings.image.alt | escape }}"
+                            loading="lazy"
+                            width="{{ block.settings.image.width }}"
+                            height="{{ block.settings.image.height }}"
+                          >
+                  {% endif %}
+                  <div class="multicolumn-card imge-txt">
+                    {%- if block.settings.title != blank -%}
+                      <h3 class="inline-richtext">{{ block.settings.title }}</h3>
+                    {%- endif -%}
+                    {%- if block.settings.text != blank -%}
+                      <div class="rte">{{ block.settings.text }}</div>
+                    {%- endif -%}
+                    {%- if block.settings.link_label != blank -%}
+                      <a
+                        class="link animate-arrow"
+                        {% if block.settings.link == blank %}
+                          role="link" aria-disabled="true"
+                        {% else %}
+                          href="{{ block.settings.link }}"
+                        {% endif %}
+                      >
+                        {{- block.settings.link_label | escape -}}
+                        <span class="icon-wrap">&nbsp;{% render 'icon-arrow' %}</span></a
+                      >
+                    {%- endif -%}
+                  </div>
+                </div>
+               </a>
+                
+              </div>
+            {%- when 'image-with-txet' -%}
+             <div class="column-grid">
+               <div class="column-two-grid">
+                   <div class="column-item">
+                       <a href="{{ block.settings.link_1 }}">
+                     {%- if block.settings.image_1 != blank -%}
+                        {%- assign image_size_2x = block.settings.image_width | times: 2 | at_most: 5760 -%}
+                        <div
+                          class="image-column"
+                          style="max-width: min(100%, {{ block.settings.image_width }}px);"
+                        >
+                          <img
+                            srcset="{{ block.settings.image_1 | image_url: width: block.settings.image_width }}, {{ block.settings.image_1 | image_url: width: image_size_2x }} 2x"
+                            src="{{ block.settings.image_1 | image_url: width: 760 }}"
+                            alt="{{ block.settings.image.alt | escape }}"
+                            loading="lazy"
+                            width="{{ block.settings.image.width }}"
+                            height="{{ block.settings.image.height }}"
+                          >
+                        </div>
+                      {%- else -%}
+                        {{ 'image' | placeholder_svg_tag: 'placeholder-svg placeholder' }}
+                      {%- endif -%}
+                       </a>
+                   </div>
+                 <div class="column-item">
+                     <a href="{{ block.settings.link_2 }}">
+                     {%- if block.settings.image_2 != blank -%}
+                        {%- assign image_size_2x = block.settings.image_width | times: 2 | at_most: 5760 -%}
+                        <div
+                          class="image-column"
+                          style="max-width: min(100%, {{ block.settings.image_width }}px);"
+                        >
+                          <img
+                            srcset="{{ block.settings.image_2 | image_url: width: block.settings.image_width }}, {{ block.settings.image_2 | image_url: width: image_size_2x }} 2x"
+                            src="{{ block.settings.image_2 | image_url: width: 760 }}"
+                            alt="{{ block.settings.image.alt | escape }}"
+                            loading="lazy"
+                            width="{{ block.settings.image.width }}"
+                            height="{{ block.settings.image.height }}"
+                          >
+                        </div>
+                      {%- else -%}
+                        {{ 'image' | placeholder_svg_tag: 'placeholder-svg placeholder' }}
+                      {%- endif -%}
+                     </a>
+                   </div>
+                 </div>
+                <div class="column-content">              
+                 {%- if block.settings.title != blank -%}
+                      <h3 class="inline-richtext">{{ block.settings.title }}</h3>
+                    {%- endif -%}
+                    {%- if block.settings.text != blank -%}
+                      <div class="rte">{{ block.settings.text }}</div>
+                   {%- endif -%}
+              </div>               
+             </div>
+            {%- when 'text' -%}
+               <div class="column-content">
+                 {%- if block.settings.title != blank -%}
+                      <h3 class="inline-richtext">{{ block.settings.title }}</h3>
+                    {%- endif -%}
+                    {%- if block.settings.text != blank -%}
+                      <div class="rte">{{ block.settings.text }}</div>
+                   {%- endif -%}
+              </div> 
+              
+            {%- when 'gallery' -%}
+               <div class="collage-card {% if section.settings.card_styles == 'none' %}global-media-settings{% else %}card-wrapper {{ section.settings.card_styles }} color-{{ settings.card_color_scheme }} gradient{% endif %}">
+                <div class="multicolumn-card-img media--transparent ratio">
+                  <a href="{{ block.settings.link }}">
+                   {%- if block.settings.image != blank -%}
+                   <img
+                            srcset="{{ block.settings.image | image_url: width: block.settings.image_width }}, {{ block.settings.image | image_url: width: image_size_2x }} 2x"
+                            src="{{ block.settings.image | image_url: width: 760 }}"
+                            alt="{{ block.settings.image.alt | escape }}"
+                            loading="lazy"
+                            width="{{ block.settings.image.width }}"
+                            height="{{ block.settings.image.height }}"
+                          >
+                  {% endif %}
+                  </a>
+                </div>
+               </div>
+          {%- endcase -%}
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Collage Grid section",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "default": "Multimedia collage",
+      "label": "t:sections.collage.settings.heading.label"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h2",
+          "label": "t:sections.all.heading_size.options__1.label"
+        },
+        {
+          "value": "h1",
+          "label": "t:sections.all.heading_size.options__2.label"
+        },
+        {
+          "value": "h0",
+          "label": "t:sections.all.heading_size.options__3.label"
+        }
+      ],
+      "default": "h1",
+      "label": "t:sections.all.heading_size.label"
+    },
+    {
+      "type": "select",
+      "id": "desktop_layout",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:sections.collage.settings.desktop_layout.options__1.label"
+        },
+        {
+          "value": "right",
+          "label": "t:sections.collage.settings.desktop_layout.options__2.label"
+        }
+      ],
+      "default": "left",
+      "label": "t:sections.collage.settings.desktop_layout.label"
+    },
+    {
+      "type": "select",
+      "id": "mobile_layout",
+      "options": [
+        {
+          "value": "collage",
+          "label": "t:sections.collage.settings.mobile_layout.options__1.label"
+        },
+        {
+          "value": "column",
+          "label": "t:sections.collage.settings.mobile_layout.options__2.label"
+        }
+      ],
+      "default": "column",
+      "label": "t:sections.collage.settings.mobile_layout.label"
+    },
+    {
+      "type": "select",
+      "id": "card_styles",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:sections.collage.settings.card_styles.options__1.label"
+        },
+        {
+          "value": "product-card-wrapper",
+          "label": "t:sections.collage.settings.card_styles.options__2.label"
+        }
+      ],
+      "default": "product-card-wrapper",
+      "info": "t:sections.collage.settings.card_styles.info",
+      "label": "t:sections.collage.settings.card_styles.label"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "info": "t:sections.all.colors.has_cards_info",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:sections.collage.blocks.image.settings.image.label"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "title",
+          "default": "Column",
+          "label": "t:sections.multicolumn.blocks.column.settings.title.label"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "default": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>",
+          "label": "t:sections.multicolumn.blocks.column.settings.text.label"
+        },
+        {
+          "type": "text",
+          "id": "link_label",
+          "label": "t:sections.multicolumn.blocks.column.settings.link_label.label"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link url"
+        }
+      ]
+    },
+    {
+      "type": "image-with-txet",
+      "name": "image with text",
+      "settings": [       
+        {
+          "type": "image_picker",
+          "id": "image_1",
+          "label": "image first"
+        },
+        {
+          "type": "url",
+          "id": "link_1",
+          "label": "Link url"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_2",
+          "label": "image secand"
+        },
+        {
+          "type": "url",
+          "id": "link_2",
+          "label": "Link url"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "title",
+          "label": "t:sections.multicolumn.blocks.column.settings.title.label"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "t:sections.multicolumn.blocks.column.settings.text.label"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "text",
+      "settings": [        
+        {
+          "type": "inline_richtext",
+          "id": "title",
+          "label": "t:sections.multicolumn.blocks.column.settings.title.label"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "t:sections.multicolumn.blocks.column.settings.text.label"
+        }
+      ]
+    },
+    {
+      "type": "gallery",
+      "name": "Gallery",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Single image"
+        },
+         {
+          "type": "url",
+          "id": "link",
+          "label": "Link url"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 4,
+  "presets": [
+    {
+      "name": "Collage Grid section",
+      "blocks": [
+        {
+          "type": "image"
+        },
+        {
+          "type": "image-with-txet"
+        },
+        {
+          "type": "text"
+        },
+        {
+          "type":"gallery"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
