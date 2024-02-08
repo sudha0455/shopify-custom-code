@@ -1,0 +1,196 @@
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="review-slider section-{{ section.id }}-padding {{ section.settings.add_class }}" id="notre-historie">
+  <div class="page-width">
+      <div class="slide-heading-group">
+        {% if section.settings.ps_heading !=blank %}
+        <h2 class="group_heds">{{ section.settings.ps_heading }}</h2>
+        {% endif %}  
+    </div>
+      <div class="review_slider" id="Slider-{{ section.id }}">
+       {%- for block in section.blocks -%}
+        <div id="Slide-{{ forloop.index }}" class="group-slide-item">        
+          <div class="slide-review-img">
+           {% if block.settings.image != blank %}
+             <div class="review-img">
+               <img srcset="{{ block.settings.image | image_url: width: block.settings.image_width }}, 
+               {{ block.settings.image | image_url: width: image_size_2x }} 2x"
+                 src="{{ block.settings.image | image_url: width: 760 }}"
+                 alt="{{ block.settings.image.alt | escape }}"
+                loading="lazy"
+                 width="{{ block.settings.image.width }}"
+                 height="{{ block.settings.image.height }}"
+                 >
+             </div>
+            {% else %}
+            {%- unless block.settings.video == blank -%}
+             <div class="video-section">
+              {{
+                  block.settings.video
+                  | video_tag:
+                    image_size: '1100x',
+                    autoplay: false,
+                    loop: section.settings.enable_video_looping,
+                    controls: true,
+                    muted: true
+              }}           
+            </div>
+           {%- endunless -%}
+             {% endif %}
+          </div>
+          <div class="collectionname">
+            <h3>{{ block.settings.bottom-text }}</h3> 
+            <h3>{{ block.settings.bottom-text }}</h3>
+          </div>         
+        </div>
+       {%- endfor -%}
+     </div>
+  </div>
+</div>
+
+
+
+      
+{% schema %}
+{
+  "name": "Review Section",
+  "tag": "section",
+  "class": "review",
+  "max_blocks": 15,
+  "settings": [
+    {
+      "type":"text",
+      "id":"add_class",
+      "label":"Don't change class name"
+    },
+    {
+      "type":"text",
+      "id":"ps_heading",
+      "label":"Top Heading"
+    },    
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "slide",
+      "settings": [
+        {
+          "type":"image_picker",
+          "id":"image",
+          "label":"Image"
+        }, 
+        {
+          "type": "video",
+          "id": "video",
+          "label": "Review video"
+        },
+        {
+          "type": "url",
+          "id": "image_link",
+          "label": "Image Url"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Review Section"
+    }
+  ]
+}
+{% endschema %}
+
+
+<style>
+  .review-img img {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+.video-section video {
+    height: 301px;
+    width: 100%;
+}  
+</style>
+
+
+
+
+<script>
+  $(document).ready(function(){
+$('.review_slider').slick({
+  dots: false,
+  arrows: true,
+  infinite: true,
+  speed: 300,
+  prevArrow: '<div class="slide-prev"><?xml version="1.0" encoding="utf-8"?><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 45.8 46.3" style="enable-background:new 0 0 45.8 46.3;" xml:space="preserve"><g><path d="M23.1,46.5c12.7,0,23-10.4,22.9-23.1c0-12.7-10.4-23-23.1-22.9C10.2,0.5-0.1,10.9,0,23.6C0,36.3,10.4,46.5,23.1,46.5z M23.1,44.2C11.6,44.2,2.3,35,2.3,23.6c0-11.5,9.2-20.7,20.6-20.8c11.5,0,20.8,9.2,20.8,20.6C43.7,34.9,34.5,44.2,23.1,44.2z"/><path d="M19,23.5c2.6-2.3,5.1-4.5,7.6-6.6c0.2-0.2,0.5-0.4,0.7-0.6c0.4-0.5,0.5-1,0-1.5c-0.4-0.5-1-0.5-1.5-0.2 c-0.2,0.1-0.4,0.3-0.6,0.5c-2.8,2.4-5.6,4.9-8.4,7.3c-1,0.9-1,1.5,0,2.3c2.9,2.5,5.7,5,8.6,7.5c0.2,0.1,0.3,0.3,0.5,0.4 c0.5,0.3,1.1,0.3,1.4-0.3c0.2-0.4,0.1-0.9,0-1.4c-0.1-0.3-0.4-0.5-0.7-0.7C24.1,28,21.6,25.8,19,23.5z"/></g></svg></div>',
+  nextArrow: '<div class="slide-next"><?xml version="1.0" encoding="utf-8"?><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 45.8 46.3" style="enable-background:new 0 0 45.8 46.3;" xml:space="preserve"><g><path d="M22.9,46.5C10.2,46.5,0,36.1,0,23.4c0-12.7,10.4-23,23.1-22.9c12.7,0,22.9,10.4,22.9,23.2C46,36.3,35.6,46.5,22.9,46.5z M22.9,44.2c11.4,0,20.7-9.2,20.8-20.6c0-11.5-9.2-20.7-20.6-20.8C11.6,2.8,2.3,12,2.3,23.4C2.3,34.9,11.5,44.2,22.9,44.2z"/><path d="M27,23.5c-2.6-2.3-5.1-4.5-7.6-6.6c-0.2-0.2-0.5-0.4-0.7-0.6c-0.4-0.5-0.5-1,0-1.5c0.4-0.5,1-0.5,1.5-0.2 c0.2,0.1,0.4,0.3,0.6,0.5c2.8,2.4,5.6,4.9,8.4,7.3c1,0.9,1,1.5,0,2.3c-2.9,2.5-5.7,5-8.6,7.5c-0.2,0.1-0.3,0.3-0.5,0.4 c-0.5,0.3-1.1,0.3-1.4-0.3c-0.2-0.4-0.1-0.9,0-1.4c0.1-0.3,0.4-0.5,0.7-0.7C21.9,28,24.4,25.8,27,23.5z"/></g></svg></div>',
+  slidesToShow: 3,
+  slidesToScroll: 1,
+  centerMode: false,
+  responsive: [
+    {
+      breakpoint: 1024,
+      settings: {
+        slidesToShow: 3,
+        slidesToScroll: 1,
+        infinite: true,
+        dots: false,
+        arrows:true
+      }
+    },
+    {
+      breakpoint: 767,
+      settings: {
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        dots: false,
+        arrows:true
+      }
+    },
+    {
+      breakpoint: 480,
+      settings: {
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        dots: false,
+        arrows:true
+      }
+    }
+  ]
+}); 
+}); 
+
+</script>
